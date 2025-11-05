@@ -25,7 +25,7 @@ export const Login = ({ onSwitchToRegister }: LoginProps) => {
     <div className="min-h-screen flex items-center justify-center bg-gray-900">
       <div className="bg-gray-800 p-8 rounded-lg shadow-lg w-full max-w-md">
         <h2 className="text-2xl font-bold text-white mb-6 text-center">
-          Login to ChatGPT Clone
+          Login to PatGPT
         </h2>
 
         {error && (

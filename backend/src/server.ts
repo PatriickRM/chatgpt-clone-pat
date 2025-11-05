@@ -2,6 +2,8 @@ import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import authRoutes from './routes/auth.routes';
+import chatRoutes from './routes/chat.routes';
+import messageRoutes from './routes/message.routes';
 import { errorHandler } from './middleware/errorHandler';
 
 
@@ -21,6 +23,8 @@ app.get('/health', (req, res) => {
 
 //Routes
 app.use('/api/auth', authRoutes);
+app.use('/api/chats', chatRoutes);
+app.use('/api/chats', messageRoutes);
 
 //Error handler
 app.use(errorHandler);
