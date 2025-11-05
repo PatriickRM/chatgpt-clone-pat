@@ -1,6 +1,9 @@
 import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
+import authRoutes from './routes/auth.routes';
+import { errorHandler } from './middleware/errorHandler';
+
 
 dotenv.config();
 
@@ -16,11 +19,12 @@ app.get('/health', (req, res) => {
   res.json({ status: 'ok', message: 'El servidor esta corriendo' });
 });
 
+//Routes
+app.use('/api/auth', authRoutes);
+
 //Error handler
-app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
-  console.error(err.stack);
-  res.status(500).json({ error: 'Ocurrio un error!' });
-});
+app.use(errorHandler);
+
 
 app.listen(PORT, () => {
   console.log(`Servidor corriendo en http://localhost:${PORT}`);
