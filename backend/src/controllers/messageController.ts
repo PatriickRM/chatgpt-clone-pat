@@ -1,6 +1,3 @@
-// ============================================
-// backend/src/controllers/messageController.ts - CORREGIDO
-// ============================================
 import { Response } from 'express';
 import { PrismaClient } from '@prisma/client';
 import { AuthRequest } from '../types';
