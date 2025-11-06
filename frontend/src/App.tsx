@@ -24,8 +24,21 @@ function App() {
   const { user, checkAuth, logout, isLoading: authLoading } = useAuthStore();
 
   //Chatstore
-  const {chats = [],currentChat,messages = [],streamingContent,isSending,selectedModel,
-        loadChats,createNewChat,selectChat,deleteChat,sendMessage,setSelectedModel} = useChatStore();
+  const {
+    chats = [],
+    currentChat,
+    messages = [], 
+    streamingContent,
+    isSending,
+    selectedModel,
+    loadChats,
+    createNewChat,
+    selectChat,
+    deleteChat,
+    sendMessage,
+    setSelectedModel
+  } = useChatStore();
+
 
   // Autoscroll hacia el final del chat
   useEffect(() => {
@@ -78,7 +91,7 @@ function App() {
 
         {/* CHAT */}
         <div className="flex-1 overflow-y-auto p-2">
-          {!chats || chats.length === 0 ? (
+           {!chats || chats.length === 0 ? (
             <p className="text-gray-500 text-sm px-3 py-2">Sin Chats Aùn</p>
           ) : (
             <div className="space-y-1">

@@ -16,7 +16,7 @@ export const getChats = async (req: AuthRequest, res: Response) => {
                 }
             }
         });
-        res.json(chats);
+        res.json({chats});
     } catch (error) {
         console.error('Error obteniendo chats:', error);
         res.status(500).json({ error: 'Error del servidor' });
@@ -58,7 +58,9 @@ export const getChat = async (req: AuthRequest, res: Response) => {
         if (!chat) {
             return res.status(404).json({ error: 'Chat no encontrado' });
         }
-        res.json(chat);
+        
+        res.json({chat});
+
         } catch (error) {
             console.error('Error obteniendo chat:', error);
             res.status(500).json({ error: 'Error del servidor' });
