@@ -10,13 +10,14 @@ import { ChatMessage } from './components/Chat/ChatMessage';
 import { ChatInput } from './components/Chat/ChatInput';
 
 const MODELS = [
-  { id: 'meta-llama/llama-3.2-3b-instruct:free', name: 'Llama 3.2 3B' },
-  { id: 'google/gemma-3-27b-it:free', name: 'Gemma 3 27B' },
-  { id: 'google/gemini-2.0-flash-exp:free', name: 'Gemini 2.0 Flash' },
-  { id: 'openai/gpt-oss-20b:free', name: 'GPT-OSS 20B' },
-  { id: 'deepseek/deepseek-chat-v3.1:free', name: 'DeepSeek Chat' },
-  { id: 'deepseek/deepseek-r1-0528-qwen3-8b:free', name: 'DeepSeek R1' }
+  { id: 'meta-llama/llama-3.2-3b-instruct:free', name: 'Llama 3.2 3B', vision: false },
+  { id: 'google/gemini-2.0-flash-exp:free', name: 'Gemini 2.0 Flash 🖼️', vision: true },
+  { id: 'deepseek/deepseek-chat-v3.1:free', name: 'DeepSeek Chat V3.1', vision: false },
+  { id: 'qwen/qwen2.5-vl-32b-instruct:free', name: 'Qwen 2.5 VL 32B 🖼️', vision: true },
+  { id: 'nvidia/nemotron-nano-12b-v2-vl:free', name: 'Nemotron Nano 12B VL 🖼️', vision: true },
+  { id: 'meta-llama/llama-4-maverick:free', name: 'Llama 4 Maverick 🖼️', vision: true }
 ];
+
 
 function App() {
   const [authMode, setAuthMode] = useState<'login' | 'register'>('login');
@@ -336,7 +337,11 @@ function App() {
         </main>
 
         {/* Input */}
-        <ChatInput onSend={sendMessage} disabled={isSending} />
+        <ChatInput 
+          onSend={sendMessage} 
+          disabled={isSending}
+          supportsVision={MODELS.find(m => m.id === selectedModel)?.vision || false}
+        />
       </div>
     </div>
   );

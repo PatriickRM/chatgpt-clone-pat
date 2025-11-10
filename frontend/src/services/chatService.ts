@@ -26,13 +26,13 @@ export const chatService = {
     return data.chat;
   },
 
-  async sendMessage(chatId: string,content: string,model: string,onToken: (token: string) => void): Promise<Message> {
+  async sendMessage(chatId: string,content: string,model: string,onToken: (token: string) => void, images?: string[]): Promise<Message> {
     const response = await fetch(`${api.defaults.baseURL}/chats/${chatId}/messages`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json', Authorization: `Bearer ${localStorage.getItem('token')}`
       },
-      body: JSON.stringify({ content, model })
+      body: JSON.stringify({ content, model, images })
     });
 
     if (!response.ok) {

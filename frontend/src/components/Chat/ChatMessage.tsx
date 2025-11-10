@@ -56,15 +56,30 @@ export const ChatMessage = ({ message, isStreaming, streamingContent }: ChatMess
         {/* Contenido */}
         <div className="flex-1 min-w-0">
           <div className={`font-semibold mb-2 text-sm ${
-            theme === 'dark' ? 'text-gray-300' : 'text-gray-700'
+            theme === 'dark' ? 'text-gray-300' : 'text-gray-800'
           }`}>
             {isUser ? 'Tú' : 'Asistente'}
           </div>
+
+          {/* Imagenes */}
+          {message.images && message.images.length > 0 && (
+            <div className="flex gap-2 flex-wrap mb-3">
+              {message.images.map((img, index) => (
+                <img
+                  key={index}
+                  src={img}
+                  alt={`Uploaded ${index + 1}`}
+                  className="max-w-xs rounded-lg border-2 border-blue-500 cursor-pointer hover:scale-105 transition-transform"
+                  onClick={() => window.open(img, '_blank')}
+                />
+              ))}
+            </div>
+          )}
           
           <div className={`prose prose-sm max-w-none ${
             theme === 'dark' 
-              ? 'prose-invert prose-pre:bg-gray-900 prose-pre:border prose-pre:border-gray-700' 
-              : 'prose-gray prose-pre:bg-gray-50 prose-pre:border prose-pre:border-gray-200'
+              ? 'prose-invert prose-pre:bg-gray-900 prose-pre:border prose-pre:border-gray-700 prose-headings:text-gray-100 prose-p:text-gray-200 prose-strong:text-gray-100 prose-code:text-pink-400 prose-li:text-gray-200' 
+              : 'prose-gray prose-pre:bg-gray-50 prose-pre:border prose-pre:border-gray-200 prose-headings:text-gray-900 prose-p:text-gray-800 prose-strong:text-gray-900 prose-code:text-pink-600 prose-li:text-gray-800'
           }`}>
             <ReactMarkdown
               remarkPlugins={[remarkGfm]}
@@ -72,17 +87,16 @@ export const ChatMessage = ({ message, isStreaming, streamingContent }: ChatMess
                 code({ node, inline, className, children, ...props }: any) {
                   const match = /language-(\w+)/.exec(className || '');
                   const language = match ? match[1] : '';
-
+                  
                   return !inline && match ? (
                     <div className="relative group/code">
-                      <div className={`absolute right-2 top-2 ${
-                        theme === 'dark' ? 'text-gray-400' : 'text-gray-600'
-                      } text-xs font-mono bg-gray-800 px-2 py-1 rounded`}>
+                      <div className={`absolute right-2 top-2 text-xs font-mono px-2 py-1 rounded ${
+                        theme === 'dark' ? 'bg-gray-800 text-gray-400' : 'bg-gray-200 text-gray-700'
+                      }`}>
                         {language}
                       </div>
-
                       <SyntaxHighlighter
-                        style={theme === 'dark' ? (oneDark as any) : (oneLight as any)}
+                        style={theme === 'dark' ? oneDark : oneLight}
                         language={language}
                         PreTag="div"
                         className="rounded-lg !mt-2"
@@ -105,6 +119,20 @@ export const ChatMessage = ({ message, isStreaming, streamingContent }: ChatMess
                     </code>
                   );
                 },
+                a({ node, children, ...props }) {
+                  return (
+                    <a
+                      className={`underline ${
+                        theme === 'dark' ? 'text-blue-400 hover:text-blue-300' : 'text-blue-600 hover:text-blue-700'
+                      }`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      {...props}
+                    >
+                      {children}
+                    </a>
+                  );
+                }
               }}
             >
               {content}

@@ -24,6 +24,7 @@ export interface Message {
   role: 'user' | 'assistant' | 'system';
   content: string;
   model?: string;
+  images?: string[];
   createdAt: string;
 }
 
@@ -40,4 +41,5 @@ export interface Model {
   id: string;
   name: string;
   provider: string;
+  vision?: boolean;
 }

@@ -12,17 +12,16 @@ interface ChatState {
   selectedModel: string;
   error: string | null;
 
-  // Actions
   loadChats: () => Promise<void>;
   createNewChat: () => Promise<void>;
   selectChat: (chatId: string) => Promise<void>;
   deleteChat: (chatId: string) => Promise<void>;
-  sendMessage: (content: string) => Promise<void>;
+  sendMessage: (content: string, images?: string[]) => Promise<void>;
   setSelectedModel: (model: string) => void;
   clearError: () => void;
 }
 
-const DEFAULT_MODEL = 'meta-llama/llama-3.2-3b-instruct:free';
+const DEFAULT_MODEL = 'google/gemini-2.0-flash-exp:free';
 
 export const useChatStore = create<ChatState>((set, get) => ({
   chats: [],
@@ -100,24 +99,28 @@ export const useChatStore = create<ChatState>((set, get) => ({
     }
   },
 
-  sendMessage: async (content: string) => {
-    const { currentChat, selectedModel } = get();
+  sendMessage: async (content: string, images?: string[]) => {
+    let { currentChat } = get();
+    const { selectedModel, messages } = get();
     
     if (!currentChat) {
-      //Crear chat si no existe
       await get().createNewChat();
-      const newCurrentChat = get().currentChat;
-      if (!newCurrentChat) return;
+      currentChat = get().currentChat;
+      if (!currentChat) {
+        set({ error: 'Error al crear chat' });
+        return;
+      }
     }
 
-    const chatId = get().currentChat!.id;
+    const chatId = currentChat.id;
+    const isFirstMessage = messages.length === 0;
 
-    //Agregar mensaje del usuario
     const userMessage: Message = {
-      id: Date.now().toString(),
+      id: `temp-${Date.now()}`,
       chatId,
       role: 'user',
       content,
+      images: images || [],
       createdAt: new Date().toISOString()
     };
 
@@ -137,21 +140,28 @@ export const useChatStore = create<ChatState>((set, get) => ({
           set(state => ({
             streamingContent: state.streamingContent + token
           }));
-        }
+        },
+        images
       );
 
-      //Agregar mensaje completo del asistente
       set(state => ({
         messages: [...state.messages, assistantMessage],
         streamingContent: '',
         isSending: false
       }));
 
-      //Recargar chats para actualizar el título
-      await get().loadChats();
+      //Si es el primer mensaje, recargar chats para actualizar el título
+      if (isFirstMessage) {
+        await get().loadChats();
+        //Actualizar el chat actual con el nuevo título
+        const updatedChat = get().chats.find(c => c.id === chatId);
+        if (updatedChat) {
+          set({ currentChat: updatedChat });
+        }
+      }
     } catch (error: any) {
       set({ 
-        error: error.message || 'Failed to send message',
+        error: error.message || 'Error al enviar mensaje',
         isSending: false,
         streamingContent: ''
       });
